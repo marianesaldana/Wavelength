@@ -18,7 +18,7 @@ A web-based adaptation of the board game **Wavelength**, built with HTML, CSS, a
 ## Disclaimer
 This project is a fan-made adaptation inspired by the original board game **Wavelength**.
 
-I am **not the creator, owner, or rights holder** of the original game, mechanics, artwork, or intellectual property related to Wavelength. All rights belong to their respective creators and publishers:
+**I am not the creator, owner, or rights holder** of the original game, mechanics, artwork, or intellectual property related to Wavelength. All rights belong to their respective creators and publishers:
 - Wolfgang Warsch
 - Alex Hague
 - Justin Vickers
