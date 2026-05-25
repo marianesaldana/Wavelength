@@ -1,0 +1,67 @@
+// ══════════════════════════════════════════
+// WAVELENGTH — Base de datos de cartas
+// ══════════════════════════════════════════
+
+const CARD_COLORS = [
+  '#6c5ce7', '#4834d4', '#fd9644', '#e55039', '#e74c3c', '#c0392b',
+  '#27ae60', '#1a8a60', '#2980b9', '#1a5a8a', '#8e44ad', '#6c3483',
+  '#d35400', '#a04000', '#16a085', '#0a6a55', '#2c3e50', '#1a2535',
+];
+
+const CATEGORIES = [
+  { id: 'all',         label: 'Todas',       color: '#6a8aaa' },
+  { id: 'sensaciones', label: 'Sensaciones', color: '#e74c3c' },
+  { id: 'opinion',     label: 'Opinión',     color: '#9b59b6' },
+  { id: 'cultura',     label: 'Cultura',     color: '#e67e22' },
+  { id: 'naturaleza',  label: 'Naturaleza',  color: '#27ae60' },
+  { id: 'vida',        label: 'Vida',        color: '#3498db' },
+  { id: 'custom',      label: 'Custom',      color: '#e9c46a' },
+];
+
+const DEFAULT_CARDS = [
+  { l: 'Caliente',     r: 'Frío',          cat: 'sensaciones', cl: '#e55039', cr: '#3498db' },
+  { l: 'Rápido',       r: 'Lento',         cat: 'vida',        cl: '#e74c3c', cr: '#27ae60' },
+  { l: 'Antiguo',      r: 'Moderno',       cat: 'cultura',     cl: '#8e44ad', cr: '#2980b9' },
+  { l: 'Valiente',     r: 'Cobarde',       cat: 'opinion',     cl: '#e67e22', cr: '#7f8c8d' },
+  { l: 'Fácil',        r: 'Difícil',       cat: 'vida',        cl: '#27ae60', cr: '#e74c3c' },
+  { l: 'Grande',       r: 'Pequeño',       cat: 'naturaleza',  cl: '#2980b9', cr: '#8e44ad' },
+  { l: 'Famoso',       r: 'Desconocido',   cat: 'cultura',     cl: '#f39c12', cr: '#7f8c8d' },
+  { l: 'Caro',         r: 'Barato',        cat: 'vida',        cl: '#c0392b', cr: '#27ae60' },
+  { l: 'Peligroso',    r: 'Seguro',        cat: 'sensaciones', cl: '#e74c3c', cr: '#2ecc71' },
+  { l: 'Infravalorado',r: 'Sobrevalorado', cat: 'opinion',     cl: '#7f8c8d', cr: '#e67e22' },
+  { l: 'Inteligente',  r: 'Tonto',         cat: 'opinion',     cl: '#2980b9', cr: '#e74c3c' },
+  { l: 'Divertido',    r: 'Aburrido',      cat: 'vida',        cl: '#f39c12', cr: '#95a5a6' },
+  { l: 'Hermoso',      r: 'Feo',           cat: 'sensaciones', cl: '#e91e63', cr: '#7f8c8d' },
+  { l: 'Natural',      r: 'Artificial',    cat: 'naturaleza',  cl: '#27ae60', cr: '#95a5a6' },
+  { l: 'Limpio',       r: 'Sucio',         cat: 'sensaciones', cl: '#3498db', cr: '#795548' },
+  { l: 'Pesado',       r: 'Ligero',        cat: 'naturaleza',  cl: '#2c3e50', cr: '#ecf0f1' },
+  { l: 'Ruidoso',      r: 'Silencioso',    cat: 'sensaciones', cl: '#e74c3c', cr: '#1abc9c' },
+  { l: 'Húmedo',       r: 'Seco',          cat: 'naturaleza',  cl: '#2980b9', cr: '#e67e22' },
+  { l: 'Suave',        r: 'Áspero',        cat: 'sensaciones', cl: '#9b59b6', cr: '#d35400' },
+  { l: 'Fuerte',       r: 'Débil',         cat: 'naturaleza',  cl: '#e74c3c', cr: '#95a5a6' },
+  { l: 'Rico',         r: 'Pobre',         cat: 'vida',        cl: '#f39c12', cr: '#7f8c8d' },
+  { l: 'Joven',        r: 'Viejo',         cat: 'vida',        cl: '#2ecc71', cr: '#95a5a6' },
+  { l: 'Popular',      r: 'Impopular',     cat: 'cultura',     cl: '#e67e22', cr: '#7f8c8d' },
+  { l: 'Optimista',    r: 'Pesimista',     cat: 'opinion',     cl: '#f39c12', cr: '#7f8c8d' },
+  { l: 'Lógico',       r: 'Emocional',     cat: 'opinion',     cl: '#2980b9', cr: '#e91e63' },
+  { l: 'Bruto',        r: 'Refinado',      cat: 'sensaciones', cl: '#795548', cr: '#9b59b6' },
+  { l: 'Huele bien',   r: 'Huele mal',     cat: 'sensaciones', cl: '#27ae60', cr: '#95a5a6' },
+  { l: 'Pacífico',     r: 'Bélico',        cat: 'opinion',     cl: '#3498db', cr: '#c0392b' },
+  { l: 'Sabroso',      r: 'Insípido',      cat: 'sensaciones', cl: '#e67e22', cr: '#95a5a6' },
+  { l: 'Útil',         r: 'Inútil',        cat: 'opinion',     cl: '#27ae60', cr: '#e74c3c' },
+  { l: 'Creativo',     r: 'Rutinario',     cat: 'vida',        cl: '#9b59b6', cr: '#7f8c8d' },
+  { l: 'Romántico',    r: 'Práctico',      cat: 'vida',        cl: '#e91e63', cr: '#2980b9' },
+  { l: 'Generoso',     r: 'Egoísta',       cat: 'opinion',     cl: '#2ecc71', cr: '#e74c3c' },
+  { l: 'Formal',       r: 'Informal',      cat: 'vida',        cl: '#2c3e50', cr: '#e67e22' },
+  { l: 'Tranquilo',    r: 'Agitado',       cat: 'sensaciones', cl: '#1abc9c', cr: '#e74c3c' },
+  { l: 'Serio',        r: 'Cómico',        cat: 'vida',        cl: '#2c3e50', cr: '#f39c12' },
+  { l: 'Raro',         r: 'Común',         cat: 'vida',        cl: '#9b59b6', cr: '#7f8c8d' },
+  { l: 'Sencillo',     r: 'Complicado',    cat: 'vida',        cl: '#27ae60', cr: '#e74c3c' },
+  { l: 'Impulsivo',    r: 'Reflexivo',     cat: 'opinion',     cl: '#e74c3c', cr: '#2980b9' },
+  { l: 'Inocente',     r: 'Culpable',      cat: 'opinion',     cl: '#ecf0f1', cr: '#c0392b' },
+  { l: 'Salvaje',      r: 'Domesticado',   cat: 'naturaleza',  cl: '#e67e22', cr: '#95a5a6' },
+  { l: 'Estresante',   r: 'Relajante',     cat: 'sensaciones', cl: '#e74c3c', cr: '#1abc9c' },
+  { l: 'Épico',        r: 'Mundano',       cat: 'cultura',     cl: '#8e44ad', cr: '#7f8c8d' },
+  { l: 'Osado',        r: 'Cauteloso',     cat: 'opinion',     cl: '#e67e22', cr: '#2980b9' },
+  { l: 'Exótico',      r: 'Local',         cat: 'cultura',     cl: '#e91e63', cr: '#27ae60' },
+];

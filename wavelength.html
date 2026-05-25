@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>WAVELENGTH</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="wavelength.css">
+</head>
+<body>
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- ════ LANDING ════════════════════════════════════════════ -->
+  <div class="view active" id="view-landing">
+    <div style="text-align:center;z-index:1;position:relative">
+      <div class="subtitle-tag" id="landing-subtitle">El juego de mesa</div>
+      <div class="logo-big">WAVELENGTH</div>
+      <p class="tagline" id="landing-tagline">¿Estás en la misma frecuencia? Lee la mente de tu equipo a través del espectro.</p>
+      <div class="btn-group" style="margin-top:1.5rem">
+        <button class="btn btn-primary btn-lg" id="btn-play"    onclick="goSetup()">🎮 Jugar</button>
+        <button class="btn btn-secondary btn-lg" id="btn-howto" onclick="goView('view-howto')">📖 Cómo Jugar</button>
+        <button class="btn btn-secondary btn-lg" id="btn-options" onclick="openSettings()">🎨 Opciones</button>
+      </div>
+      <p style="margin-top:1.5rem;font-size:.65rem;color:#2a4a6a" id="authors-line">Wolfgang Warsch · Alex Hague · Justin Vickers</p>
+    </div>
+  </div>
+
+  <!-- ════ CÓMO JUGAR ════════════════════════════════════════ -->
+  <div class="view" id="view-howto" style="overflow-y:auto">
+    <div class="card" style="max-width:640px;max-height:88vh;overflow-y:auto">
+      <div class="how-tabs">
+        <button class="how-tab active" onclick="switchHowTab('tab-how',this)">🎮 Cómo Jugar</button>
+        <button class="how-tab"        onclick="switchHowTab('tab-rules',this)">📋 Reglamento</button>
+      </div>
+
+      <div class="how-pane active" id="tab-how">
+        <div class="card-title" style="margin-bottom:.7rem">🎮 Cómo Jugar</div>
+        <p style="font-size:.84rem;color:#c0d0e0;line-height:1.65;margin-bottom:.8rem">
+          Dos equipos compiten leyendo la mente del <b>Psíquico</b>. El Psíquico ve el objetivo
+          secreto en el dial y da una pista conceptual entre dos opuestos. El equipo mueve la aguja
+          para acertar.
+        </p>
+        <div class="sep"></div>
+
+        <span class="lbl">Fases de cada ronda</span>
+        <div style="display:grid;gap:.4rem;margin-bottom:.8rem">
+          <div class="sitem" style="text-align:left;display:flex;gap:.6rem;align-items:flex-start">
+            <span style="font-size:1.1rem">🔮</span>
+            <span><b>Fase Psíquica</b> — El psíquico ve el objetivo, roba una carta y da UNA pista en el espectro entre los dos conceptos.</span>
+          </div>
+          <div class="sitem" style="text-align:left;display:flex;gap:.6rem;align-items:flex-start">
+            <span style="font-size:1.1rem">💬</span>
+            <span><b>Fase de Equipo</b> — El equipo del psíquico debate libremente y arrastra la aguja al lugar donde creen que está el objetivo.</span>
+          </div>
+          <div class="sitem" style="text-align:left;display:flex;gap:.6rem;align-items:flex-start">
+            <span style="font-size:1.1rem">↔️</span>
+            <span><b>Fase Izq/Der</b> — El otro equipo adivina si el objetivo real está a la izquierda o derecha de la aguja.</span>
+          </div>
+          <div class="sitem" style="text-align:left;display:flex;gap:.6rem;align-items:flex-start">
+            <span style="font-size:1.1rem">🎯</span>
+            <span><b>Revelación</b> — Se levanta la pantalla y aparecen los recuadros de colores y los puntos. Se cuentan los puntos.</span>
+          </div>
+        </div>
+
+        <span class="lbl">Puntuación</span>
+        <div class="sbreak" style="justify-content:flex-start;margin-bottom:.8rem">
+          <div class="sitem"><div class="sl">Centro 🔵</div><div class="sv" style="color:#4b7bec">4 pts</div></div>
+          <div class="sitem"><div class="sl">Zona 🔴</div><div class="sv" style="color:#e74c3c">3 pts</div></div>
+          <div class="sitem"><div class="sl">Borde 🟠</div><div class="sv" style="color:#f39c12">2 pts</div></div>
+          <div class="sitem"><div class="sl">↔️ correcto</div><div class="sv" style="color:var(--accent)">1 pt</div></div>
+        </div>
+
+        <span class="lbl">Condición de victoria</span>
+        <p style="font-size:.82rem;color:#c0d0e0;line-height:1.55;margin-bottom:.8rem">
+          El primer equipo en llegar al límite de puntos (o tener más puntos al terminar las rondas) ¡gana!
+        </p>
+      </div>
+
+      <div class="how-pane" id="tab-rules">
+        <div class="card-title" style="margin-bottom:.7rem">📋 Reglamento Oficial</div>
+        <div class="rule-section">
+          <div class="rule-title">1. Transmitir un solo pensamiento</div>
+          <div class="rule-text">Una pista no puede combinar múltiples ideas.</div>
+        </div>
+        <div class="rule-section">
+          <div class="rule-title">2. No inventar nada</div>
+          <div class="rule-text">La pista debe existir en el mundo real.</div>
+        </div>
+        <div class="rule-section">
+          <div class="rule-title">3. Sin sinónimos ni números</div>
+          <div class="rule-text">No puedes usar palabras de la misma familia ni números.</div>
+        </div>
+        <div class="rule-section">
+          <div class="rule-title">4. Regla de Recuperación</div>
+          <div class="rule-text">Si el equipo activo va perdiendo y acierta al centro (4 pts), repite turno con otro psíquico.</div>
+        </div>
+      </div>
+
+      <div style="margin-top:.5rem">
+        <button class="btn btn-secondary btn-sm" onclick="goView('view-landing')">← Volver</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ SETUP ═════════════════════════════════════════════ -->
+  <div class="view" id="view-setup">
+    <div class="card" style="max-height:90vh;overflow-y:auto">
+      <div class="card-title">🎲 Configurar Partida</div>
+
+      <span class="lbl">Modo de juego</span>
+      <div class="mode-grid">
+        <div class="mode-tile selected" id="mt-comp" onclick="selMode('competitive')">
+          <div class="mi">⚔️</div>
+          <div class="mn">Competitivo</div>
+          <div class="md">2 equipos · primero en la meta gana</div>
+        </div>
+        <div class="mode-tile" id="mt-coop" onclick="selMode('coop')">
+          <div class="mi">🤝</div>
+          <div class="mn">Cooperativo</div>
+          <div class="md">Todos juntos · 7 rondas</div>
+        </div>
+      </div>
+
+      <div id="comp-setup">
+        <span class="lbl">Condición de victoria</span>
+        <div class="win-mode-grid">
+          <div class="win-mode-tile selected" id="wm-pts" onclick="selWinMode('points')">
+            <div class="wmi">🏆</div>
+            <div class="wmn">Por Puntos</div>
+            <div class="wmd">Primero en llegar al límite</div>
+          </div>
+          <div class="win-mode-tile" id="wm-rds" onclick="selWinMode('rounds')">
+            <div class="wmi">🔄</div>
+            <div class="wmn">Por Rondas</div>
+            <div class="wmd">Mayor puntaje al terminar</div>
+          </div>
+        </div>
+
+        <div id="pts-config">
+          <span class="lbl">Límite de puntos: <span id="ptl">10</span></span>
+          <input type="range" class="range-in" min="5" max="25" value="10" id="pts-range"
+                 oninput="document.getElementById('ptl').textContent=this.value">
+        </div>
+        <div id="rds-config" style="display:none">
+          <span class="lbl">Número de rondas: <span id="rdl">10</span></span>
+          <input type="range" class="range-in" min="4" max="20" value="10" id="rds-range"
+                 oninput="document.getElementById('rdl').textContent=this.value">
+        </div>
+
+        <span class="lbl">Equipos</span>
+        <div class="teams-row" id="teams-row"></div>
+      </div>
+
+      <div id="coop-setup" style="display:none">
+        <span class="lbl">Jugadores (2–8)</span>
+        <div id="coop-players"></div>
+        <button class="btn btn-ghost btn-sm" style="margin-top:.45rem" onclick="addCoopP()">+ Jugador</button>
+      </div>
+
+      <div class="sep"></div>
+      <div style="display:flex;gap:.65rem;margin-top:.5rem;flex-wrap:wrap">
+        <button class="btn btn-primary" style="flex:1" onclick="startGame()">🚀 Iniciar</button>
+        <button class="btn btn-secondary" onclick="goView('view-landing')">← Volver</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ GAME ══════════════════════════════════════════════ -->
+  <div class="view" id="view-game">
+    <div class="game-top">
+      <button class="hbtn" onclick="confirmMenu()">☰ Menú</button>
+      <div class="scoreboard" id="scoreboard"></div>
+      <div style="display:flex;gap:.45rem;align-items:center">
+        <div class="rbadge" id="rbadge">R1</div>
+        <button class="hbtn" onclick="openSettings()">🎨</button>
+      </div>
+    </div>
+
+    <div class="phase-tag" id="phase-tag">🔮 FASE PSÍQUICA</div>
+
+    <div class="spectrum-strip" id="spectrum-strip" style="display:none">
+      <div class="scard sc-l" id="sc-left-wrap"><div class="arr">←</div><div id="sl-text">Caliente</div></div>
+      <div class="sc-m"><span>ESPECTRO</span></div>
+      <div class="scard sc-r" id="sc-right-wrap"><div class="arr">→</div><div id="sr-text">Frío</div></div>
+    </div>
+
+    <div class="dial-wrap">
+      <svg id="dial-svg" viewBox="0 0 560 310" xmlns="http://www.w3.org/2000/svg" style="overflow:visible">
+        <defs>
+          <filter id="nglow" x="-80%" y="-80%" width="260%" height="260%">
+            <feGaussianBlur stdDeviation="6" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="dshadow">
+            <feDropShadow dx="0" dy="5" stdDeviation="8" flood-color="rgba(0,0,0,.7)"/>
+          </filter>
+          <radialGradient id="faceGrad" cx="50%" cy="90%" r="70%">
+            <stop offset="0%"   class="face-stop-1"/>
+            <stop offset="100%" class="face-stop-2"/>
+          </radialGradient>
+          <linearGradient id="screenGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%"   stop-color="#3ee8da" id="sg1"/>
+            <stop offset="100%" stop-color="#1a8a85" id="sg2"/>
+          </linearGradient>
+          <linearGradient id="needleGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%"   class="needle-stop-1"/>
+            <stop offset="45%"  class="needle-stop-2"/>
+            <stop offset="100%" class="needle-stop-3"/>
+          </linearGradient>
+          <clipPath id="semi-clip">
+            <path d="M0 295 A280 280 0 0 1 560 295 Z"/>
+          </clipPath>
+        </defs>
+
+        <!-- Sombra base + carcasa -->
+        <ellipse cx="280" cy="308" rx="248" ry="12" fill="rgba(0,0,0,.4)"/>
+        <rect x="16" y="218" width="528" height="92" rx="22" fill="#0a1c2e" filter="url(#dshadow)"/>
+        <rect x="16" y="218" width="528" height="92" rx="22" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="1.5"/>
+
+        <!-- Fondo oscuro semicircular -->
+        <path d="M0 295 A280 280 0 0 1 560 295 Z" fill="#0b1d2d"/>
+
+        <!-- Marcadores del borde (rim ticks) -->
+        <g id="rim-ticks" stroke="rgba(255,255,255,.22)" stroke-width="1.3"></g>
+
+        <!-- CARA IVORY — base del dial (siempre visible debajo) -->
+        <path d="M0 295 A280 280 0 0 1 560 295 Z" fill="url(#faceGrad)" clip-path="url(#semi-clip)"/>
+
+        <!-- WAVE GUIDE — patrón decorativo sobre la ivory -->
+        <g id="wave-guide" clip-path="url(#semi-clip)"></g>
+
+        <!-- ════════════════════════════════════════════════════
+             ZONAS OBJETIVO — colores + puntos del juego de mesa
+             Capa puesta POR ENCIMA de la cara ivory para que, al
+             revelar (cuando el screen se aparte), se vean los
+             recuadros de colores y los puntos como en el tablero.
+             ════════════════════════════════════════════════════ -->
+        <g id="target-zones" clip-path="url(#semi-clip)">
+          <!-- Cuñas de color -->
+          <path id="z2l" fill="#f39c12" opacity="0.95"/>
+          <path id="z3l" fill="#e74c3c" opacity="0.95"/>
+          <path id="z4"  fill="#4b7bec" opacity="1"/>
+          <path id="z3r" fill="#e74c3c" opacity="0.95"/>
+          <path id="z2r" fill="#f39c12" opacity="0.95"/>
+
+          <!-- Divisores entre zonas -->
+          <line id="div-2l3l" x1="0" y1="0" x2="0" y2="0" stroke="rgba(255,255,255,.55)" stroke-width="2"/>
+          <line id="div-3l4"  x1="0" y1="0" x2="0" y2="0" stroke="rgba(255,255,255,.55)" stroke-width="2"/>
+          <line id="div-4-3r" x1="0" y1="0" x2="0" y2="0" stroke="rgba(255,255,255,.55)" stroke-width="2"/>
+          <line id="div-3r2r" x1="0" y1="0" x2="0" y2="0" stroke="rgba(255,255,255,.55)" stroke-width="2"/>
+
+          <!-- Etiquetas numéricas (2 · 3 · 4 · 3 · 2) -->
+          <text id="lb2l" class="zone-num" font-size="15"/>
+          <text id="lb3l" class="zone-num" font-size="15"/>
+          <text id="lb4"  class="zone-num" font-size="18"/>
+          <text id="lb3r" class="zone-num" font-size="15"/>
+          <text id="lb2r" class="zone-num" font-size="15"/>
+        </g>
+
+        <!-- ════════════════════════════════════════════════════
+             PANTALLA AZUL — oculta las zonas hasta el reveal
+             Animada (rotación + opacidad) cuando se revela
+             ════════════════════════════════════════════════════ -->
+        <g id="blue-screen" clip-path="url(#semi-clip)">
+          <path d="M0 295 A280 280 0 0 1 560 295 Z" fill="url(#screenGrad)"/>
+          <g opacity=".09" stroke="white" stroke-width="1">
+            <path d="M280 295 L55 55"/>
+            <path d="M280 295 L162 18"/>
+            <path d="M280 295 L280 14"/>
+            <path d="M280 295 L398 18"/>
+            <path d="M280 295 L505 55"/>
+          </g>
+          <g id="screen-stars" fill="rgba(255,255,255,.75)"></g>
+        </g>
+
+        <!-- Aros dorado y negro decorativos sobre todo -->
+        <path class="dial-ring-outer" d="M0 295 A280 280 0 0 1 560 295 Z" fill="none" stroke-width="3.5" clip-path="url(#semi-clip)"/>
+        <path d="M5 295 A275 275 0 0 1 555 295 Z" fill="none" stroke="rgba(0,0,0,.3)"      stroke-width="2"   clip-path="url(#semi-clip)"/>
+
+        <!-- AGUJA -->
+        <g id="needle-group" style="transform-origin:280px 295px;cursor:grab">
+          <line x1="280" y1="288" x2="280" y2="90" stroke="url(#needleGrad)" stroke-width="11" stroke-linecap="round" filter="url(#nglow)"/>
+          <line x1="283" y1="288" x2="283" y2="93" stroke="rgba(255,255,255,.18)" stroke-width="3"  stroke-linecap="round"/>
+          <polygon class="needle-tip-dark"  points="280,65 270,96 290,96" filter="url(#nglow)"/>
+          <polygon class="needle-tip-light" points="280,70 272,95 288,95"/>
+          <circle  class="needle-cap-dark"   cx="280" cy="295" r="25" stroke-width="3" filter="url(#nglow)"/>
+          <circle  class="needle-cap-mid"    cx="280" cy="295" r="14"/>
+          <circle  class="needle-cap-light"  cx="280" cy="295" r="7"/>
+          <circle  class="needle-cap-bright" cx="280" cy="295" r="3"/>
+        </g>
+
+        <!-- Drag zone invisible para capturar el arrastre -->
+        <path d="M0 295 A280 280 0 0 1 560 295 Z" fill="transparent" id="drag-zone" style="cursor:grab"/>
+        <text x="24"  y="285" fill="rgba(255,255,255,.28)" font-size="11" font-family="DM Sans">←</text>
+        <text x="536" y="285" fill="rgba(255,255,255,.28)" font-size="11" font-family="DM Sans" text-anchor="end">→</text>
+      </svg>
+      <div class="dial-hint" id="dial-hint"></div>
+    </div>
+
+    <div class="phase-panel" id="phase-panel">
+      <div class="pp-title" id="pp-title">Cargando…</div>
+      <div class="pp-desc"  id="pp-desc"></div>
+      <div id="pp-content"></div>
+      <div class="pp-actions" id="pp-actions"></div>
+    </div>
+  </div>
+
+  <!-- ════ WIN ═══════════════════════════════════════════════ -->
+  <div class="view" id="view-win">
+    <div class="confetti-wrap" id="confetti-wrap"></div>
+    <div style="text-align:center;position:relative;z-index:1;max-width:540px;width:100%">
+      <div style="font-size:2.9rem;margin-bottom:.35rem" id="win-emoji">🏆</div>
+      <div class="win-title" id="win-title">¡Victoria!</div>
+      <div style="font-size:1.15rem;font-weight:700;margin:.45rem 0" id="win-team"></div>
+      <div class="fscores" id="fscores"></div>
+      <div class="btn-group" style="margin-top:1rem">
+        <button class="btn btn-primary   btn-lg" onclick="goSetup()">🎮 Nueva Partida</button>
+        <button class="btn btn-secondary btn-lg" onclick="goView('view-landing')">🏠 Inicio</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ OVERLAY · PASAR AL PSÍQUICO ═══════════════════════ -->
+  <div class="overlay" id="overlay-psychic-pass">
+    <div class="cover-icon">🔮</div>
+    <div class="cover-title" id="pass-title">Turno del Psíquico</div>
+    <div style="font-size:clamp(1.1rem,3.4vw,1.55rem);font-weight:800;margin:.35rem 0;text-align:center;color:var(--accent2)" id="pass-name"></div>
+    <div class="cover-sub">Pasa el dispositivo al psíquico.<br>Solo él debe ver la siguiente pantalla.</div>
+    <button class="btn btn-gold btn-xl" onclick="revealToPsychic()">👁 Soy el psíquico — revelar</button>
+    <button class="btn btn-ghost btn-sm" style="margin-top:.85rem;opacity:.65" onclick="hideOverlay('overlay-psychic-pass')">Cancelar</button>
+  </div>
+
+  <!-- ════ OVERLAY · EL PSÍQUICO VE EL OBJETIVO ══════════════ -->
+  <div class="overlay" id="overlay-psychic-sees">
+    <div style="text-align:center;max-width:500px;width:100%;display:flex;flex-direction:column;align-items:center;gap:.55rem">
+      <div style="font-size:1.35rem;margin-bottom:0">🎯 Solo tú puedes ver esto</div>
+      <div style="font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:3px;color:var(--muted)">EL OBJETIVO SECRETO</div>
+
+      <div style="position:relative;width:min(340px,82vw)">
+        <svg id="mini-dial" viewBox="0 0 560 310" style="width:100%;height:auto;filter:drop-shadow(0 7px 22px rgba(0,0,0,.85))">
+          <defs>
+            <clipPath id="mini-clip"><path d="M0 295 A280 280 0 0 1 560 295 Z"/></clipPath>
+            <radialGradient id="miniFace" cx="50%" cy="90%" r="70%">
+              <stop offset="0%"   class="face-stop-1"/>
+              <stop offset="100%" class="face-stop-2"/>
+            </radialGradient>
+            <filter id="mnglow" x="-80%" y="-80%" width="260%" height="260%">
+              <feGaussianBlur stdDeviation="6" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <linearGradient id="mnGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%"   class="needle-stop-1"/>
+              <stop offset="45%"  class="needle-stop-2"/>
+              <stop offset="100%" class="needle-stop-3"/>
+            </linearGradient>
+          </defs>
+          <path d="M0 295 A280 280 0 0 1 560 295 Z" fill="#0b1d2d"/>
+          <!-- En el mini dial las zonas SÍ se ven desde el inicio -->
+          <path d="M0 295 A280 280 0 0 1 560 295 Z" fill="url(#miniFace)" opacity=".65" clip-path="url(#mini-clip)"/>
+          <g id="mz-grp" clip-path="url(#mini-clip)" opacity="1">
+            <path id="mz2l" fill="#f39c12" opacity="0.95"/>
+            <path id="mz3l" fill="#e74c3c" opacity="0.95"/>
+            <path id="mz4"  fill="#4b7bec" opacity="1"/>
+            <path id="mz3r" fill="#e74c3c" opacity="0.95"/>
+            <path id="mz2r" fill="#f39c12" opacity="0.95"/>
+          </g>
+          <path class="dial-ring-outer" d="M0 295 A280 280 0 0 1 560 295 Z" fill="none" stroke-width="3" clip-path="url(#mini-clip)"/>
+          <g id="mini-needle" style="transform-origin:280px 295px">
+            <line x1="280" y1="288" x2="280" y2="90" stroke="url(#mnGrad)" stroke-width="11" stroke-linecap="round" filter="url(#mnglow)"/>
+            <polygon class="needle-tip-dark" points="280,65 270,96 290,96" filter="url(#mnglow)"/>
+            <circle class="needle-cap-dark"  cx="280" cy="295" r="22" stroke-width="3" filter="url(#mnglow)"/>
+            <circle class="needle-cap-mid"   cx="280" cy="295" r="11"/>
+            <circle class="needle-cap-light" cx="280" cy="295" r="5"/>
+          </g>
+        </svg>
+      </div>
+
+      <div style="display:flex;border-radius:10px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,.55)">
+        <div class="scard sc-l" id="mini-sc-l" style="min-width:75px;padding:.45rem .9rem"><div class="arr">←</div><div id="mini-sl"></div></div>
+        <div class="sc-m" style="padding:.28rem .5rem"><span style="font-size:.5rem;letter-spacing:1px;text-transform:uppercase;color:#7a9ab8;transform:rotate(90deg);white-space:nowrap;display:block">ESPECTRO</span></div>
+        <div class="scard sc-r" id="mini-sc-r" style="min-width:75px;padding:.45rem .9rem"><div class="arr">→</div><div id="mini-sr"></div></div>
+      </div>
+
+      <div style="font-size:.76rem;color:var(--muted)">Memoriza la posición y escribe tu pista</div>
+      <input class="clue-input" id="psych-clue-input" placeholder="Ej: Café, Gandhi, Mi hermano mayor…" maxlength="45" oninput="G.clue=this.value" autocomplete="off">
+      <div style="font-size:.62rem;color:var(--muted)">Un concepto · sin sinónimos · sin números · ≤5 palabras</div>
+      <div style="display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center">
+        <button class="btn btn-gold btn-lg" onclick="submitClue()">Dar pista →</button>
+        <button class="btn btn-ghost btn-sm" style="opacity:.65" onclick="hideOverlay('overlay-psychic-sees')">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ SETTINGS ══════════════════════════════════════════ -->
+  <div class="settings-overlay" id="so" onclick="closeSettings()"></div>
+  <div class="settings-panel" id="sp">
+    <div class="sp-tabs">
+      <div class="sp-tab active" onclick="switchSpTab('sp-themes',this)">🎨 Temas</div>
+      <div class="sp-tab"        onclick="switchSpTab('sp-cards',this)">🃏 Cartas</div>
+      <div class="sp-tab"        onclick="switchSpTab('sp-misc',this)">⚙️ Misc</div>
+    </div>
+    <div class="sp-body">
+      <div class="sp-pane active" id="sp-themes">
+        <div class="st">Tema Visual</div>
+        <div class="themes-grid" id="themes-grid"></div>
+      </div>
+
+      <div class="sp-pane" id="sp-cards">
+        <div class="st">Cartas del Juego</div>
+        <div class="cat-filter" id="cat-filter"></div>
+        <div class="card-grid" id="card-grid"></div>
+        <div class="sep"></div>
+
+        <div style="font-size:.7rem;font-weight:700;color:var(--accent2);margin-bottom:.5rem">➕ Nueva Carta Personalizada</div>
+        <div class="add-card-form">
+          <div class="add-card-row">
+            <input class="add-card-input" id="acc-left"  placeholder="Concepto izquierda">
+            <input class="add-card-input" id="acc-right" placeholder="Concepto derecha">
+          </div>
+
+          <div style="font-size:.65rem;color:var(--muted);margin-bottom:.2rem">Categoría</div>
+          <div class="add-card-row">
+            <select id="acc-cat" style="flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:7px;padding:.3rem .5rem;color:#fff;font-size:.8rem;outline:none">
+              <option value="custom">Personalizada</option>
+              <option value="sensaciones">Sensaciones</option>
+              <option value="opinion">Opinión</option>
+              <option value="cultura">Cultura</option>
+              <option value="naturaleza">Naturaleza</option>
+              <option value="vida">Vida</option>
+            </select>
+          </div>
+
+          <div style="font-size:.65rem;color:var(--muted);margin-bottom:.2rem">Color izquierda</div>
+          <div class="color-select-row" id="acc-colors-left"></div>
+
+          <div style="font-size:.65rem;color:var(--muted);margin:.2rem 0">Color derecha</div>
+          <div class="color-select-row" id="acc-colors-right"></div>
+
+          <button class="btn btn-primary btn-sm" style="width:100%;margin-top:.5rem" onclick="addCustomCard()">+ Agregar carta</button>
+        </div>
+      </div>
+
+      <div class="sp-pane" id="sp-misc">
+        <div class="st">Configuración</div>
+        <div class="toggle-row" style="align-items:center">
+          <span style="font-size:.88rem">Idioma</span>
+          <select id="lang-select" style="background:transparent;border-radius:6px;padding:.28rem;color:var(--cream);border:1px solid var(--border)">
+            <option value="es">Español</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+        <div class="toggle-row">
+          <span style="font-size:.88rem">Temporizador de pista</span>
+          <label class="tog"><input type="checkbox" id="tog-timer"><span class="tog-sl"></span></label>
+        </div>
+        <div id="timer-set" style="display:none;margin-bottom:.8rem">
+          <span class="lbl" style="margin-top:0">Segundos: <span id="tlabel">60</span>s</span>
+          <input type="range" class="range-in" min="20" max="120" value="60" id="t-range"
+                 oninput="document.getElementById('tlabel').textContent=this.value">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notif" id="notif"></div>
+
+  <!-- Scripts -->
+  <script src="cards.js"></script>
+  <script src="wavelength.js"></script>
+</body>
+</html>
